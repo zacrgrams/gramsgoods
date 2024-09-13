@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Gallery</title>
+    <style>
+        body, html {
+            height: 100vh; /* Full height of the viewport */
+            margin: 0;
+            background-color: white;
+            overflow-x: hidden; /* Prevent horizontal overflow */
+            overflow-y: auto; /* Enable vertical scrolling when necessary */
+            position: relative;
+            font-family: Arial, sans-serif;
+        }
+
+        #gallery {
+            width: 100%;
+            position: relative;
+            height: 100vh; /* Ensures gallery covers full viewport height */
+            padding: 50px; /* Adds padding to avoid images sticking to the edges */
+        }
+
+        .title {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+            z-index: 300;
+        }
+
+        img.draggable {
+            position: absolute;
+            width: 150px;
+            cursor: grab;
+            border: 2px solid blue;
+            transition: transform 0.2s ease-in-out;
+            z-index: 200;
+        }
+
+        img.draggable:active {
+            cursor: grabbing;
+        }
+
+        .audio-controls button {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+  }
+    </style>
+</head>
+<body>
+    <div class="title">create build experience</div>
+
+    <audio id="backgroundMusic" loop>
+    <source src="1.wav" type="audio/wav">
+    <source src="2.wav" type="audio/wav">
+    Your browser does not support the audio element.
+</audio>
+<div class="audio-controls">
+    <button id="playPauseBtn" onclick="togglePlayPause()">Play</button>
+    <button onclick="stopAudio()">Stop</button>
+    <!-- Skip functionality can be added if there are multiple tracks -->
+    <button onclick="skipTrack()">Skip</button>
+</div>
+
+
+
+    <div id="gallery">
+        <img src="2.jpg" class="draggable" alt="Art Piece 1">
+        <img src="1.jpg" class="draggable" alt="Art Piece 2">
+        <img src="2.jpg" class="draggable" alt="Art Piece 3">
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const gallery = document.getElementById('gallery');
+            const maxX = gallery.clientWidth - 150; // 150 is the width of the images
+            const maxY = window.innerHeight - 150; // Subtracting height of the images
+
+            document.querySelectorAll('img.draggable').forEach(img => {
+                // Randomly position each image on load
+                img.style.left = Math.floor(Math.random() * maxX) + 'px';
+                img.style.top = Math.floor(Math.random() * maxY) + 'px';
+                makeDraggable(img);
+            });
+        });
+
+        function makeDraggable(element) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            element.onmousedown = function (e) {
+                e.preventDefault(); // Prevent default image drag
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            };
+
+            function elementDrag(e) {
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                // stop moving when mouse button is released
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+        const audioPlayer = document.getElementById('backgroundMusic');
+const playPauseBtn = document.getElementById('playPauseBtn');
+
+function togglePlayPause() {
+    if (audioPlayer.paused) {
+        audioPlayer.play();
+        playPauseBtn.textContent = 'Pause'; // Change button text to "Pause"
+    } else {
+        audioPlayer.pause();
+        playPauseBtn.textContent = 'Play'; // Change button text to "Play"
+    }
+}
+
+function stopAudio() {
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0; // Reset the play time to the beginning
+    playPauseBtn.textContent = 'Play'; // Ensure button says "Play" after stopping
+}
+
+function skipTrack() {
+    // Example handling, assuming you have an array of track sources
+    const tracks = ["background-music.mp3", "another-track.mp3"];
+    let currentTrack = audioPlayer.src.split('/').pop(); // Get the current file name
+    let nextIndex = (tracks.indexOf(currentTrack) + 1) % tracks.length;
+    audioPlayer.src = tracks[nextIndex];
+    audioPlayer.play();
+    playPauseBtn.textContent = 'Pause'; // Ensure button says "Pause" when new track plays
+}
+
+
+    </script>
+</body>
+</html>
