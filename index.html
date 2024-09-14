@@ -9,7 +9,7 @@
             height: 100%;
             margin: 0;
             background-color: #F2F0EF;
-            overflow: auto;
+            overflow: hidden;
             position: relative;
             font-family: sans-serif;
         }
@@ -18,27 +18,21 @@
             width: 100%;
             height: 100%;
             position: relative;
-            overflow-x: auto; /* Allows horizontal scrolling */
-            white-space: nowrap; /* Ensures all items line up horizontally */
+            overflow: hidden; /* Adjust if necessary for your design */
         }
 
         .title {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 6em;
+            position: absolute; /* Made absolute for random positioning */
+            font-size: 6em; /* Adjusted for better view on all devices */
             z-index: 100; /* Ensures the title is always visible */
         }
 
         img.draggable {
             position: absolute;
             cursor: grab;
-            border: 6px solid blue; /* Blue border added */
+            border: 3px solid blue; /* Adjusted border for aesthetics */
             transition: transform 0.2s ease-in-out;
             z-index: 200; /* Ensures images are above the information blocks */
-            display: inline-block; /* Aligns images horizontally */
-            width: auto; /* Width controlled by inline styles for individual sizing */
         }
 
         img.draggable:active {
@@ -47,8 +41,8 @@
 
         .info-block {
             position: absolute;
-            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
-            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
             border: 1px solid #ccc;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             z-index: 50; /* Lower z-index to keep behind the images */
@@ -56,7 +50,7 @@
 
         .time-display {
             position: absolute;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background for visibility */
+            background-color: rgba(0, 0, 0, 0.5);
             color: white;
             padding: 5px 10px;
             font-size: 1.2em;
@@ -66,21 +60,21 @@
     </style>
 </head>
 <body>
-    <div class="title">grams</div>
     <div id="gallery">
-        <img src="3.jpg" class="draggable" style="width: 300px; height: auto;" alt="Art Piece 1">
-        <img src="2.jpg" class="draggable" style="width: 450px; height: auto;" alt="Art Piece 2">
-        <img src="1.jpg" class="draggable" style="width: 600px; height: auto;" alt="Art Piece 3">
-        <div class="info-block" style="width: 100px; height: 100px;">create</div>
-        <div class="info-block" style="width: 150px; height: 100px;">experience</div>
-        <div class="info-block" style="width: 120px; height: 100px;">build</div>
-        <div class="info-block" style="width: 130px; height: 100px;">wonder</div>
-        <div class="info-block" style="width: 110px; height: 100px;">blue</div>
+        <div class="title">grams</div>
+        <img src="3.jpg" class="draggable" style="width: 600px; height: auto;" alt="Art Piece 1">
+        <img src="2.jpg" class="draggable" style="width: 250px; height: auto;" alt="Art Piece 2">
+        <img src="1.jpg" class="draggable" style="width: 200px; height: auto;" alt="Art Piece 3">
+        <div class="info-block">create</div>
+        <div class="info-block">experience</div>
+        <div class="info-block">build</div>
+        <div class="info-block">wonder</div>
+        <div class="info-block">blue</div>
         <a href="info1.html" style="text-decoration: none; color: inherit;">
-            <div class="info-block" style="width: 140px; height: 100px;">grams</div>
+            <div class="info-block">grams</div>
         </a>
+        <div class="time-display" id="time">Loading time...</div>
     </div>
-    <div class="time-display" id="time">Loading time...</div>
 
     <script>
         function makeDraggable(element) {
@@ -119,9 +113,19 @@
             document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
         }
 
+        function positionElementRandomly(element) {
+            const maxX = window.innerWidth - element.offsetWidth;
+            const maxY = window.innerHeight - element.offsetHeight;
+            element.style.left = Math.floor(Math.random() * maxX) + "px";
+            element.style.top = Math.floor(Math.random() * maxY) + "px";
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
-            const draggables = document.querySelectorAll('.draggable');
-            draggables.forEach(el => makeDraggable(el));
+            const elements = document.querySelectorAll('#gallery > *');
+            elements.forEach(el => {
+                makeDraggable(el);
+                positionElementRandomly(el);
+            });
             setInterval(updateTime, 1000);
             updateTime();
         });
